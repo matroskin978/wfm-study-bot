@@ -14,3 +14,10 @@ function add_chat_info(int $chat_id, string $name, string $lang): bool
     $stmt = $pdo->prepare("INSERT INTO chat_info (chat_id, first_name, lang) VALUES (?, ?, ?)");
     return $stmt->execute([$chat_id, $name, $lang]);
 }
+
+function set_lang($chat_id, $lang): bool
+{
+    global $pdo;
+    $stmt = $pdo->prepare("UPDATE chat_info SET lang = ? WHERE chat_id = ?");
+    return $stmt->execute([$lang, $chat_id]);
+}
