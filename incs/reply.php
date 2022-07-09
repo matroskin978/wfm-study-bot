@@ -13,7 +13,10 @@ $answer = $update['message']['text'] ?? '';
 
 if ($question == $lang[$lang_code]['get_name']) {
 
-    if (empty($answer)) {
+    $name = preg_replace("#[^a-zа-яё -]#ui", "", $answer);
+    $name = trim($name);
+
+    if (empty($name)) {
         $telegram->sendMessage([
             'chat_id' => $chat_id,
             'text' => $lang[$lang_code]['get_name_error'],
@@ -24,11 +27,11 @@ if ($question == $lang[$lang_code]['get_name']) {
             'reply_markup' => $telegram->forceReply(),
         ]);
     } else {
-        save_name($chat_id, $answer);
+        save_name($chat_id, $name);
         $telegram->sendMessage([
             'chat_id' => $chat_id,
             'parse_mode' => 'HTML',
-            'text' => sprintf($lang[$lang_code]['meet'], $answer),
+            'text' => sprintf($lang[$lang_code]['meet'], $name),
         ]);
     }
 
