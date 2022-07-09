@@ -52,6 +52,11 @@ if ($text == '/start') {
     // Callbacks
     require_once __DIR__ . '/incs/callbacks.php';
 
+} elseif (isset($update['message']['reply_to_message']['text'])) {
+
+    // Reply
+    require_once __DIR__ . '/incs/reply.php';
+
 } else {
     $telegram->sendMessage([
         'chat_id' => $chat_id,
