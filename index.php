@@ -10,17 +10,19 @@ require_once __DIR__ . '/incs/config.php';
 require_once __DIR__ . '/incs/db.php';
 require_once __DIR__ . '/incs/TelegramBot.php';
 require_once __DIR__ . '/incs/funcs.php';
-require_once __DIR__ . '/incs/keyboards.php';
 $lang = require_once __DIR__ . '/incs/phrase.php';
+require_once __DIR__ . '/incs/keyboards.php';
 
 /**
  * @var array $lang_keyboard
+ * @var array $pa_keyboard
+ * @var array $main_keyboard
  */
 
 $telegram = new TelegramBot(TOKEN);
 $update = $telegram->getWebhookUpdates();
 
-file_put_contents(__DIR__ . '/logs.txt', print_r($update, 1), FILE_APPEND);
+//file_put_contents(__DIR__ . '/logs.txt', print_r($update, 1), FILE_APPEND);
 
 $text = $update['message']['text'] ?? '';
 $name = $update['message']['chat']['first_name'] ?? '';
@@ -47,6 +49,28 @@ if ($text == '/start') {
             'inline_keyboard' => $lang_keyboard,
         ])
     ]);
+} elseif ($text == $lang[$lang_code]['pa_btn']) {
+
+    $telegram->sendMessage([
+        'chat_id' => $chat_id,
+        'text' => $lang[$lang_code]['pa_instruction'],
+        'reply_markup' => $telegram->replyKeyboardMarkup([
+            'keyboard' => $pa_keyboard[$lang_code],
+            'resize_keyboard' => true,
+        ]),
+    ]);
+
+} elseif ($text == $lang[$lang_code]['main_menu_btn']) {
+
+    $telegram->sendMessage([
+        'chat_id' => $chat_id,
+        'text' => $lang[$lang_code]['main_instruction'],
+        'reply_markup' => $telegram->replyKeyboardMarkup([
+            'keyboard' => $main_keyboard[$lang_code],
+            'resize_keyboard' => true,
+        ]),
+    ]);
+
 } elseif (isset($update['callback_query'])) {
 
     // Callbacks

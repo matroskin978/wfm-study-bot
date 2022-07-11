@@ -2,6 +2,7 @@
 
 /**
  * @var array $update
+ * @var array $main_keyboard
  * @var array $lang
  * @var string $lang_code
  * @var TelegramBot $telegram
@@ -32,6 +33,10 @@ if ($question == $lang[$lang_code]['get_name']) {
             'chat_id' => $chat_id,
             'parse_mode' => 'HTML',
             'text' => sprintf($lang[$lang_code]['meet'], $name),
+            'reply_markup' => $telegram->replyKeyboardMarkup([
+                'keyboard' => $main_keyboard[$lang_code],
+                'resize_keyboard' => true,
+            ]),
         ]);
     }
 
