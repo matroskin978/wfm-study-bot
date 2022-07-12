@@ -42,6 +42,7 @@ if (empty($data)) {
 }
 
 if ($text == '/start') {
+
     $telegram->sendMessage([
         'chat_id' => $chat_id,
         'text' => $lang['ru']['start'] . PHP_EOL . PHP_EOL . $lang['en']['start'],
@@ -49,6 +50,35 @@ if ($text == '/start') {
             'inline_keyboard' => $lang_keyboard,
         ])
     ]);
+
+} elseif ($text == '/menu') {
+
+    $telegram->sendMessage([
+        'chat_id' => $chat_id,
+        'text' => $lang[$lang_code]['main_instruction'],
+        'reply_markup' => $telegram->replyKeyboardMarkup([
+            'keyboard' => $main_keyboard[$lang_code],
+            'resize_keyboard' => true,
+        ])
+    ]);
+
+} elseif ($text == '/ru' || $text == '/en') {
+
+    $lang_command = ltrim($text, '/');
+    if ($lang_code != $lang_command) {
+        $lang_code = $lang_command;
+        set_lang($chat_id, $lang_code);
+    }
+
+    $telegram->sendMessage([
+        'chat_id' => $chat_id,
+        'text' => $lang[$lang_code]['active_lang'],
+        'reply_markup' => $telegram->replyKeyboardMarkup([
+            'keyboard' => $main_keyboard[$lang_code],
+            'resize_keyboard' => true,
+        ])
+    ]);
+
 } elseif ($text == $lang[$lang_code]['pa_btn']) {
 
     $telegram->sendMessage([
@@ -71,6 +101,19 @@ if ($text == '/start') {
         ]),
     ]);
 
+} elseif ($text == $lang[$lang_code]['diary_btn']) {
+
+    $telegram->sendMessage([
+        'chat_id' => $chat_id,
+        'text' => $lang[$lang_code]['diary_start'],
+    ]);
+
+    $telegram->sendMessage([
+        'chat_id' => $chat_id,
+        'text' => $lang[$lang_code]['diary_1'],
+        'reply_markup' => $telegram->forceReply(),
+    ]);
+
 } elseif (isset($update['callback_query'])) {
 
     // Callbacks
@@ -84,6 +127,7 @@ if ($text == '/start') {
 } else {
     $telegram->sendMessage([
         'chat_id' => $chat_id,
+        'parse_mode' => 'HTML',
         'text' => $lang[$lang_code]['something'],
     ]);
 }
